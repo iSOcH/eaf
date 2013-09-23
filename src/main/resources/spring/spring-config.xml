@@ -1,12 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
     <bean id="renderer" class="edu.spring.domain.renderer.StandardOutRenderer">
-        <property name="messageProvider" ref="provider"/>
+        <property name="messageProvider" ref="provider3"/>
     </bean>
 
+    <context:property-placeholder location="classpath:app.properties"></context:property-placeholder>
+
     <bean id="provider" class="edu.spring.domain.provider.HelloWorldProvider"/>
+
+    <!--<bean id="provider2" class="edu.spring.domain.provider.ExternalizedConstructorHelloworldMessageProvider">-->
+        <!--<constructor-arg value="${helloworld.message}"/>-->
+    <!--</bean>-->
+
+    <bean id="provider3" class="edu.spring.domain.provider.ExternalizedConstructorHelloworldMessageProvider">
+        <property name="message" value="${helloworld.message}"/>
+    </bean>
+
 
 </beans>

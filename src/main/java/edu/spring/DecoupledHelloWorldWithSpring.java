@@ -2,8 +2,7 @@ package edu.spring;
 
 import edu.spring.domain.renderer.MessageRenderer;
 import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.xml.XmlBeanFactory;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  * @author Michael Sacher
@@ -17,7 +16,7 @@ public class DecoupledHelloWorldWithSpring {
   }
 
   private static BeanFactory getBeanFactory() {
-    XmlBeanFactory factory = new XmlBeanFactory(new ClassPathResource("/spring/spring-config.xml"));
-    return factory;
+//    XmlBeanFactory factory = new XmlBeanFactory(new ClassPathResource("/spring/spring-config.xml"));
+    return new ClassPathXmlApplicationContext(new String[] {"/spring/spring-config.xml"});
   }
 }
