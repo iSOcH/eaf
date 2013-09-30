@@ -12,7 +12,6 @@
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
 	<context:property-placeholder location="classpath:server.properties, classpath:datasource.properties" />
-
 	<bean id="movieService"
 		class="ch.fhnw.edu.rental.services.impl.MovieServiceImpl">
 		<property name="movieDAO" ref="movieDAO" />
