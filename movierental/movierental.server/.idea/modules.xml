@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/movierental.iml" filepath="$PROJECT_DIR$/movierental.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../movierental.client/movierental.client.iml" filepath="$PROJECT_DIR$/../movierental.client/movierental.client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../movierental.common/movierental.common.iml" filepath="$PROJECT_DIR$/../movierental.common/movierental.common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/movierental.server.iml" filepath="$PROJECT_DIR$/movierental.server.iml" />
     </modules>
   </component>
 </project>
