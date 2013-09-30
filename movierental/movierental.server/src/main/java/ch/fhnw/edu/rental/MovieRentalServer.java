@@ -1,9 +1,8 @@
 package ch.fhnw.edu.rental;
 
+import ch.fhnw.edu.rental.test.util.DbInitializer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-
-import ch.fhnw.edu.rental.test.util.DbInitializer;
 
 public class MovieRentalServer {
 	private static ApplicationContext context;
