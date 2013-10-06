@@ -334,7 +334,7 @@
                         </goals>
                         <configuration>
                             <sources>
-                                <!--<source>/src/main/daoJdbc</source>-->
+                                <source>/src/main/daoJdbc</source>
                                 <source>/src/main/daoMemory</source>
                                 <source>/src/main/daoJpa</source>
                                 <source>/src/main/java</source>

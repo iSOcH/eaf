@@ -1,6 +1,7 @@
 package ch.fhnw.edu.rental;
 
 import ch.fhnw.edu.rental.test.util.DbInitializer;
+import ch.fhnw.edu.rental.test.util.JdbcDbInitializer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -10,7 +11,7 @@ public class MovieRentalServer {
 	public static void main(String[] args) {
         context = new ClassPathXmlApplicationContext(new String[]{"facade.xml", "business.xml", "datasource.xml"});
 
-		DbInitializer dbinit = (DbInitializer)context.getBean("dbinit");
+		JdbcDbInitializer dbinit = (JdbcDbInitializer)context.getBean("dbinit");
 		try {
 			dbinit.resetData(context);
 			System.out.println("Database filled with initial values.");

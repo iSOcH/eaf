@@ -16,7 +16,7 @@ public class TestUtil {
 	
 	public static ApplicationContext getSpringContext(String[] contexts) throws Exception {
 		context = new ClassPathXmlApplicationContext(contexts);
-		DbInitializer dbinit = (DbInitializer)context.getBean("dbinit");
+		JdbcDbInitializer dbinit = (JdbcDbInitializer)context.getBean("dbinit");
 		dbinit.resetData(context);
 		return context;
 	}

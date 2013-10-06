@@ -1,5 +1,6 @@
 package ch.fhnw.edu.rental.model;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 public class Movie {
@@ -19,8 +20,16 @@ public class Movie {
 		this.priceCategory = priceCategory;
 		this.rented = false;
 	}
-	
-	public PriceCategory getPriceCategory() {
+
+    public Movie(Long movie_id, String movie_title, Timestamp movie_releasedate, Boolean movie_rented, PriceCategory pc) {
+        id = movie_id;
+        title = movie_title;
+        releaseDate = movie_releasedate;
+        rented = movie_rented;
+        priceCategory = pc;
+    }
+
+    public PriceCategory getPriceCategory() {
 		return priceCategory;
 	}
 
