@@ -90,7 +90,7 @@ public class JdbcMovieDAO implements MovieDAO {
 
         JdbcTemplate template = new JdbcTemplate(ds);
         int noEntries = 0;
-        noEntries = template.queryForInt("select MOVIE_ID from MOVIES");
+        noEntries = template.queryForInt("select count(*) from MOVIES where MOVIE_ID = ?",movie.getId());
         if(noEntries == 0){
             template.update("INSERT INTO MOVIES (MOVIE_ID, MOVIE_TITLE, MOVIE_RELEASEDATE, MOVIE_RENTED, PRICECATEGORY_FK) VALUES (?,?,?,?,?)",
                     movie.getId(),

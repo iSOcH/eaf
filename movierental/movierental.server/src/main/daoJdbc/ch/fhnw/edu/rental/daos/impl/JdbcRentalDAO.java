@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -17,189 +18,124 @@ import ch.fhnw.edu.rental.daos.UserDAO;
 import ch.fhnw.edu.rental.model.Movie;
 import ch.fhnw.edu.rental.model.Rental;
 import ch.fhnw.edu.rental.model.User;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 
 public class JdbcRentalDAO implements RentalDAO {
 
-	private DataSource ds;
-	private MovieDAO movieDAO;
-	private UserDAO userDAO;
+    private DataSource ds;
+    private MovieDAO movieDAO;
+    private UserDAO userDAO;
 
-	public void setDataSource(DataSource dataSource) {
-		this.ds = dataSource;
-	}
+    public void setDataSource(DataSource dataSource) {
+        this.ds = dataSource;
+    }
 
-	public void setMovieDAO(MovieDAO movieDAO) {
-		this.movieDAO = movieDAO;
-	}
+    public void setMovieDAO(MovieDAO movieDAO) {
+        this.movieDAO = movieDAO;
+    }
 
-	public void setUserDAO(UserDAO userDAO) {
-		this.userDAO = userDAO;
-	}
+    public void setUserDAO(UserDAO userDAO) {
+        this.userDAO = userDAO;
+    }
 
-	@Override
-	public Rental getById(Long id) {
-		Connection conn = null;
-		try {
-			conn = ds.getConnection();
-			Statement st = conn.createStatement();
-			ResultSet rs = st
-					.executeQuery("select * from RENTALS where RENTAL_ID = "
-							+ id);
-			if (rs.next()) {
-				return createRental(rs);
-			} else
-				return null;
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException e) {
-					throw new RuntimeException(e);
-				}
-			}
-		}
-	}
+    @Override
+    public Rental getById(Long id) {
+        JdbcTemplate template = new JdbcTemplate(ds);
+        Map<String, Object> result = template.queryForMap("select * from RENTALS where RENTAL_ID = ", id);
+        JdbcUserDAO userDAO = new JdbcUserDAO();
+        JdbcMovieDAO movieDAO = new JdbcMovieDAO();
+        userDAO.setDataSource(ds);
+        movieDAO.setDataSource(ds);
 
-	@Override
-	public List<Rental> getAll() {
-		List<Rental> rentals = new LinkedList<Rental>();
-		Connection conn = null;
-		try {
-			conn = ds.getConnection();
-			Statement st = conn.createStatement();
-			ResultSet rs = st.executeQuery("select * from RENTALS");
-			while (rs.next()) {
-				rentals.add(createRental(rs));
-			}
-			return rentals;
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException e) {
-					throw new RuntimeException(e);
-				}
-			}
-		}
-	}
+        return new Rental(
+                userDAO.getById((Long) result.get("USER_ID")),
+                movieDAO.getById((Long) result.get("MOVIE_ID")),
+                (Integer) result.get("RENTAL_RENTALDAYS")
+        );
 
-	@Override
-	public List<Rental> getRentalsByUser(User user) {
-		List<Rental> rentals = new LinkedList<Rental>();
-		Connection conn = null;
-		try {
-			conn = ds.getConnection();
-			Statement st = conn.createStatement();
-			ResultSet rs = st
-					.executeQuery("select * from RENTALS where USER_ID = "
-							+ user.getId());
-			while (rs.next()) {
-				rentals.add(createRental(rs, user));
-			}
-			return rentals;
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException e) {
-					throw new RuntimeException(e);
-				}
-			}
-		}
-	}
+    }
 
-	@Override
-	public void saveOrUpdate(Rental rental) {
-		Connection conn = null;
-		try {
-			conn = ds.getConnection();
+    @Override
+    public List<Rental> getAll() {
+        JdbcTemplate template = new JdbcTemplate();
+        return template.query(
+                "select * from MOVIES ",
+                new RowMapper<Rental>() {
+                    public Rental mapRow(ResultSet rs, int row)
+                            throws SQLException {
+                        return new Rental(
+                                userDAO.getById(rs.getLong("USER_ID")),
+                                movieDAO.getById(rs.getLong("MOVIE_ID")),
+                                rs.getInt("RENTAL_RENTALDAYS")
+                        );
+                    }
+                }
+        );
+    }
 
-			PreparedStatement pst;
-			if (rental.getId() == null) { // insert
-				long id = 0;
-				Statement st = conn.createStatement();
-				ResultSet rs = st
-						.executeQuery("select max(RENTAL_ID) from RENTALS");
-				if (rs.next()) {
-					id = rs.getLong(1) + 1;
-				}
-				rental.setId(id);
+    @Override
+    public List<Rental> getRentalsByUser(User user) {
+        JdbcTemplate template = new JdbcTemplate();
+        return template.query(
+             "select * from RENTALS where USER_ID = ?", new RowMapper<Rental>() {
+                public Rental mapRow(ResultSet rs, int row)
+                        throws SQLException {
+                    return new Rental(
+                            userDAO.getById(rs.getLong("USER_ID")),
+                            movieDAO.getById(rs.getLong("MOVIE_ID")),
+                            rs.getInt("RENTAL_RENTALDAYS")
+                    );
+                }
+            },
+            user.getId()
+        );
 
-				pst = conn
-						.prepareStatement("INSERT INTO RENTALS (RENTAL_ID, RENTAL_RENTALDATE, RENTAL_RENTALDAYS, USER_ID, MOVIE_ID) VALUES (?,?,?,?,?)");
-				pst.setLong(1, rental.getId());
-				pst.setDate(2, new Date(rental.getRentalDate().getTime()));
-				pst.setInt(3, rental.getRentalDays());
-				pst.setLong(4, rental.getUser().getId());
-				pst.setLong(5, rental.getMovie().getId());
-				pst.execute();
-			} else { // update
-				pst = conn
-						.prepareStatement("UPDATE RENTALS SET RENTAL_RENTALDATE=?, RENTAL_RENTALDAYS=?, USER_ID=?, MOVIE_ID=? where RENTAL_ID=?");
-				pst.setLong(5, rental.getId());
-				pst.setDate(1, new Date(rental.getRentalDate().getTime()));
-				pst.setInt(2, rental.getRentalDays());
-				pst.setLong(3, rental.getUser().getId());
-				pst.setLong(4, rental.getMovie().getId());
-				pst.execute();
-			}
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException e) {
-					throw new RuntimeException(e);
-				}
-			}
-		}
+    }
 
-	}
+    @Override
+    public void saveOrUpdate(Rental rental) {
+                JdbcTemplate template = new JdbcTemplate(ds);
+        int noEntries = 0;
+        noEntries = template.queryForInt("select * from RENTALS where RENTAL_ID = ?",rental.getId());
+        if(noEntries == 0){
+            template.update("INSERT INTO RENTALS (RENTAL_ID, RENTAL_RENTALDATE, RENTAL_RENTALDAYS, USER_ID, MOVIE_ID) VALUES (?,?,?,?,?)",
+                    rental.getUser(),
+                    rental.getRentalDate(),
+                    rental.getRentalDays(),
+                    rental.getUser().getId(),
+                    rental.getMovie().getId());
+        }else{
+            template.update("UPDATE RENTALS SET RENTAL_RENTALDATE=?, RENTAL_RENTALDAYS=?, USER_ID=?, MOVIE_ID=? where RENTAL_ID=?",
+                    rental.getRentalDate(),
+                    rental.getRentalDays(),
+                    rental.getUser().getId(),
+                    rental.getMovie().getId()
+            );
+        }
+    }
 
-	@Override
-	public void delete(Rental rental) {
-		Connection conn = null;
-		try {
-			conn = ds.getConnection();
-			Statement st = conn.createStatement();
-			st.execute("delete from RENTALS where RENTAL_ID = "
-					+ rental.getId());
-			rental.setId(null);
-			rental.getUser().getRentals().remove(rental);
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException e) {
-					throw new RuntimeException(e);
-				}
-			}
-		}
-	}
+    @Override
+    public void delete(Rental rental) {
+        JdbcTemplate template = new JdbcTemplate(ds);
+        template.execute("delete from RENTALS where RENTAL_ID = " + rental.getId());
 
-	private Rental createRental(ResultSet rs) throws SQLException {
-		User user = userDAO.getById(rs.getLong("USER_ID"));
-		return createRental(rs, user);
-	}
+    }
 
-	private Rental createRental(ResultSet rs, User u) throws SQLException {
-		Movie m = movieDAO.getById(rs.getLong("MOVIE_ID"));
-		if (!m.isRented())
-			throw new RuntimeException("movie must be rented if read from DB");
-		m.setRented(false);
-		Rental r = new Rental(u, m, rs.getInt("RENTAL_RENTALDAYS"));
-		m.setRented(true);
-		r.setId(rs.getLong("RENTAL_ID"));
-		return r;
-	}
+    private Rental createRental(ResultSet rs) throws SQLException {
+        User user = userDAO.getById(rs.getLong("USER_ID"));
+        return createRental(rs, user);
+    }
+
+    private Rental createRental(ResultSet rs, User u) throws SQLException {
+        Movie m = movieDAO.getById(rs.getLong("MOVIE_ID"));
+        if (!m.isRented())
+            throw new RuntimeException("movie must be rented if read from DB");
+        m.setRented(false);
+        Rental r = new Rental(u, m, rs.getInt("RENTAL_RENTALDAYS"));
+        m.setRented(true);
+        r.setId(rs.getLong("RENTAL_ID"));
+        return r;
+    }
 
 }
