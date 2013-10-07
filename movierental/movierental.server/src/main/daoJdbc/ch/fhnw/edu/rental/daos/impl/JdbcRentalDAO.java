@@ -58,9 +58,9 @@ public class JdbcRentalDAO implements RentalDAO {
 
     @Override
     public List<Rental> getAll() {
-        JdbcTemplate template = new JdbcTemplate();
+        JdbcTemplate template = new JdbcTemplate(ds);
         return template.query(
-                "select * from MOVIES ",
+                "select * from RENTALS",
                 new RowMapper<Rental>() {
                     public Rental mapRow(ResultSet rs, int row)
                             throws SQLException {
@@ -76,7 +76,7 @@ public class JdbcRentalDAO implements RentalDAO {
 
     @Override
     public List<Rental> getRentalsByUser(User user) {
-        JdbcTemplate template = new JdbcTemplate();
+        JdbcTemplate template = new JdbcTemplate(ds);
         return template.query(
              "select * from RENTALS where USER_ID = ?", new RowMapper<Rental>() {
                 public Rental mapRow(ResultSet rs, int row)

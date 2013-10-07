@@ -44,13 +44,12 @@ public class JdbcUserDAO implements UserDAO {
 
     @Override
     public List<User> getAll() {
-        JdbcTemplate template = new JdbcTemplate();
+        JdbcTemplate template = new JdbcTemplate(ds);
         return template.query(
-                "select * from USERS ",
+                "SELECT * from USERS",
                 new RowMapper<User>() {
                     public User mapRow(ResultSet rs, int row)
                             throws SQLException {
-                        long priceCategory = rs.getLong("PRICECATEGORY_FK");
                         User user = new User(
                                 rs.getString("USER_NAME"),
                                 rs.getString("USER_FIRSTNAME"));

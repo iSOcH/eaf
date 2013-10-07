@@ -29,7 +29,7 @@ public class JdbcPriceCategoryDAO implements PriceCategoryDAO {
         JdbcTemplate template = new JdbcTemplate(ds);
         Map<String, Object> res = template.queryForMap(
                 "select * from PRICECATEGORIES where PRICECATEGORY_ID = ?", id);
-        Integer pc_id = (Integer) res.get("PRICECATEGORY_ID");
+        Integer pc_id = ((Long) res.get("PRICECATEGORY_ID")).intValue();
         String pc_type = (String) res.get("PRICECATEGORY_TYPE");
         switch (pc_id) {
             case 1:

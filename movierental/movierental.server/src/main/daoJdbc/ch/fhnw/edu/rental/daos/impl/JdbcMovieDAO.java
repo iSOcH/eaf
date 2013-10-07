@@ -47,7 +47,7 @@ public class JdbcMovieDAO implements MovieDAO {
     }
 @Override
     public List<Movie> getByTitle(String name) {
-        JdbcTemplate template = new JdbcTemplate();
+        JdbcTemplate template = new JdbcTemplate(ds);
         return template.query(
                 "select * from MOVIES where MOVIE_TITLE = ?",
                 new RowMapper<Movie>() {
@@ -67,7 +67,7 @@ public class JdbcMovieDAO implements MovieDAO {
 }
     @Override
     public List<Movie> getAll() {
-                JdbcTemplate template = new JdbcTemplate();
+                JdbcTemplate template = new JdbcTemplate(ds);
         return template.query(
                 "select * from MOVIES ",
                 new RowMapper<Movie>() {
