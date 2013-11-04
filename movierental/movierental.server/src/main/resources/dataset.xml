@@ -43,17 +43,17 @@
 		
 	<USERS USER_ID='1'
 		USER_VERSION='0'
-		USER_EMAIL='marc.keller@gmail.com'
+		USER_EMAIL='jue.luthiger@gmail.com'
 		USER_NAME='Keller'
 		USER_FIRSTNAME='Marc'/>			
 	<USERS USER_ID='2'
 		USER_VERSION='0'
-		USER_EMAIL='werner.knecht@gmail.com'
+		USER_EMAIL='[NULL]'
 		USER_NAME='Knecht'
 		USER_FIRSTNAME='Werner'/>			
 	<USERS USER_ID='3'
 		USER_VERSION='0'
-		USER_EMAIL='barbara.meyer@gmail.com'
+		USER_EMAIL='jue.luthiger@gmail.com'
 		USER_NAME='Meyer'
 		USER_FIRSTNAME='Barbara'/>			
 	<USERS USER_ID='4'
@@ -63,17 +63,17 @@
 		USER_FIRSTNAME='Adolf'/>			
 
 	<RENTALS RENTAL_ID='1'
-		RENTAL_RENTALDATE='2010-09-12'
+		RENTAL_RENTALDATE='2007-09-12'
 		RENTAL_RENTALDAYS='7'
 		USER_ID='1'
 		MOVIE_ID='1'/>			
 	<RENTALS RENTAL_ID='2'
-		RENTAL_RENTALDATE='2010-09-12'
+		RENTAL_RENTALDATE='2007-09-12'
 		RENTAL_RENTALDAYS='6'
 		USER_ID='1'
 		MOVIE_ID='2'/>			
 	<RENTALS RENTAL_ID='3'
-		RENTAL_RENTALDATE='2010-09-12'
+		RENTAL_RENTALDATE='2007-09-12'
 		RENTAL_RENTALDAYS='4'
 		USER_ID='3'
 		MOVIE_ID='3'/>			
