@@ -48,6 +48,8 @@
 	<bean
 		class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
 
+	<tx:annotation-driven transaction-manager="txManager"/>
+
 
 	<!-- all the DAOs -->
 	<bean id="movieDAO"
