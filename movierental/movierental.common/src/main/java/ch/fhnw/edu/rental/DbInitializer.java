@@ -1,4 +1,4 @@
-package ch.fhnw.edu.rental.test.util;
+package ch.fhnw.edu.rental;
 
 import org.springframework.context.ApplicationContext;
 
