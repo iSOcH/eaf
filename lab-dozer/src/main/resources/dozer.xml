@@ -4,24 +4,29 @@
           xsi:schemaLocation="http://dozer.sourceforge.net
           http://dozer.sourceforge.net/schema/beanmapping.xsd">
 
-	<configuration>
-		<custom-converters> <!-- these are always bi-directional -->
-			<converter type="ch.fhnw.imvs.dozer.RentalConverter">
-				<class-a>ch.fhnw.imvs.model.Rental</class-a>
-				<class-b>java.lang.Long</class-b>
-			</converter>
+    <configuration>
+        <custom-converters> <!-- these are always bi-directional -->
+            <converter type="ch.fhnw.imvs.dozer.RentalConverter">
+                <class-a>ch.fhnw.imvs.model.Rental</class-a>
+                <class-b>java.lang.Long</class-b>
+            </converter>
 
-		</custom-converters>
-	</configuration>
+        </custom-converters>
+    </configuration>
 
-	<mapping>
-		<class-a>ch.fhnw.imvs.model.User</class-a>
-		<class-b>ch.fhnw.imvs.dto.UserDTO</class-b>
-	</mapping>  
-  
-	<mapping>
-		<class-a>ch.fhnw.imvs.model.Rental</class-a>
-		<class-b>ch.fhnw.imvs.dto.RentalDTO</class-b>
-	</mapping>  
-  
+    <mapping>
+        <class-a>ch.fhnw.imvs.model.User</class-a>
+        <class-b>ch.fhnw.imvs.dto.UserDTO</class-b>
+    </mapping>
+
+    <mapping>
+        <class-a>ch.fhnw.imvs.model.Rental</class-a>
+        <class-b>ch.fhnw.imvs.dto.RentalDTO</class-b>
+        <field>
+            <a>User.Id</a>
+            <b>userId</b>
+        </field>
+    </mapping>
+
+
 </mappings>
